@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const RedditImageFetcher = require("reddit-image-fetcher");
 const { EmbedBuilder } = require("discord.js");
-const { botColour } = require(`../config.js`);
+const { botColour } = require(`../data/config.js`);
 const Guild = require(`../schemas/guild`);
 
 module.exports = {

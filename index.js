@@ -1,5 +1,5 @@
 // Require other classes
-const { token, databaseToken } = require("./config.js");
+const { token, databaseToken } = require("./data/config.js");
 const { connect, connection } = require(`mongoose`);
 const fs = require("node:fs");
 const path = require("node:path");
