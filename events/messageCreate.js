@@ -11,7 +11,7 @@ module.exports = {
 
     const userId = message.member.user.id;
     await checkGuildSchema(message.guild);
-    await checkUserSchema(message.guild, message);
+    await checkUserSchema(message.member, message);
 
     let guildProfile = await Guild.findOne({ guildId: message.guild.id });
 
