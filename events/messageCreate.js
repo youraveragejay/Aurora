@@ -14,20 +14,17 @@ module.exports = {
     await checkUserSchema(message.guild, message);
 
     let guildProfile = await Guild.findOne({ guildId: message.guild.id });
-    console.log(`Level: ${guildProfile.levels.get(`${userId}`).level}`);
 
-    const randomXP = Math.floor(Math.random() * 4) + 1;
+    const randomXP = Math.floor(Math.random() * 6) + 2;
 
     guildProfile.levels.set(`${userId}`, {
       level: guildProfile.levels.get(`${userId}`).level,
       xp: guildProfile.levels.get(`${userId}`).xp + randomXP,
     });
-    console.log(`XP: ${guildProfile.levels.get(`${userId}`).xp}`);
 
     let lvlXp =
       baseXP * guildProfile.levels.get(`${userId}`).level -
       guildProfile.levels.get(`${userId}`).xp;
-    console.log(`XP to next level: ${lvlXp}`);
 
     if (lvlXp <= 0) {
       guildProfile.levels.set(`${userId}`, {

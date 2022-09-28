@@ -7,5 +7,5 @@ module.exports = {
     "token": process.env.TOKEN,
     "databaseToken": process.env.DB_TOKEN,
     "botColour": "0xbe7471",
-    "baseXP": 10
+    "baseXP": 50
 }

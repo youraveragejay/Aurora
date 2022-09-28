@@ -76,5 +76,5 @@ client.login(token);
 
 // Connect to mongo
 (async () => {
-  await connect(databaseToken).catch(console.error);
+  await connect(process.env.DB_TOKEN).catch(console.error);
 })();
