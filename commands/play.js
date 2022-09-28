@@ -1,5 +1,5 @@
 const play = require("play-dl"); // Everything
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, StageChannel } = require("discord.js");
 const {
   createAudioPlayer,
   createAudioResource,
@@ -24,10 +24,14 @@ module.exports = {
     )
     .setDMPermission(false),
   async execute(interaction) {
+    await interaction.deferReply();
     let song = interaction.options.getString(`song`);
 
     // Check if user is in VC
-    if (!interaction.member.voice?.channel)
+    if (
+      !interaction.member.voice?.channel ||
+      typeof interaction.member.voice.channel === StageChannel
+    )
       return await interaction.reply("Connect to a Voice Channel");
 
     // Connect to VC
@@ -37,27 +41,50 @@ module.exports = {
       adapterCreator: interaction.guild.voiceAdapterCreator,
     });
 
-    // Search for the song
-    let yt_info = await play.search(song, {
-      limit: 1,
-    });
+    if (play.yt_validate(interaction.options.getString(`song`)) === "video") {
+      console.log(play.yt_validate(interaction.options.getString(`song`)));
+      let yt_info = await play.video_info(
+        interaction.options.getString(`song`)
+      );
+      let stream = await play.stream_from_info(yt_info);
+      let resource = createAudioResource(stream.stream, {
+        inputType: stream.type,
+      });
 
-    // Setup the audio player
-    let stream = await play.stream(yt_info[0].url);
+      let player = createAudioPlayer({
+        behaviors: {
+          noSubscriber: NoSubscriberBehavior.Play,
+        },
+      });
 
-    let resource = createAudioResource(stream.stream, {
-      inputType: stream.type,
-    });
+      player.play(resource);
 
-    let player = createAudioPlayer({
-      behaviors: {
-        noSubscriber: NoSubscriberBehavior.Play,
-      },
-    });
+      connection.subscribe(player);
+      await interaction.followUp(`Now playing ${yt_info.video_details.url}`);
+    } else {
+      // Search for the song
+      let yt_info = await play.search(song, {
+        limit: 1,
+      });
 
-    // Play
-    player.play(resource);
+      // Setup the audio player
+      let stream = await play.stream(yt_info[0].url);
 
-    connection.subscribe(player);
+      let resource = createAudioResource(stream.stream, {
+        inputType: stream.type,
+      });
+
+      let player = createAudioPlayer({
+        behaviors: {
+          noSubscriber: NoSubscriberBehavior.Play,
+        },
+      });
+
+      // Play
+      player.play(resource);
+
+      connection.subscribe(player);
+      await interaction.followUp(`Now playing ${yt_info[0]}`);
+    }
   },
 };

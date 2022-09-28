@@ -18,7 +18,7 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
     let guildProfile = await Guild.findOne({ guildId: interaction.guild.id });
-    if (!guildProfile) checkGuildSchema();
+    if (!guildProfile) await checkGuildSchema();
     RedditImageFetcher.fetch({
       type: "custom",
       total: 50,

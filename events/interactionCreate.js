@@ -4,8 +4,8 @@ const checkGuildSchema = require("../checkGuildSchema");
 module.exports = {
 	name: 'interactionCreate',
 	execute: (async interaction => {
-		checkGuildSchema(interaction.guild);
-		checkUserSchema(interaction.user, interaction);
+		await checkGuildSchema(interaction.guild);
+		await checkUserSchema(interaction.user, interaction);
 		if (!interaction.isChatInputCommand()) return;
 		const command = interaction.client.commands.get(interaction.commandName);
 

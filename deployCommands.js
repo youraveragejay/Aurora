@@ -14,11 +14,11 @@ for (const file of commandFiles) {
 	commands.push(command.data.toJSON());
 }
 
-const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
+const rest = new REST({ version: "10" }).setToken(token);
 
 rest
   .put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
   .then((data) =>
-    console.log(`Successfully registered ${data.length} application commands locally.`)
+    console.log(`Successfully registered ${data.length} application commands.`)
   )
   .catch(console.error);

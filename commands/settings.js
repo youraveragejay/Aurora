@@ -34,7 +34,7 @@ module.exports = {
         content: `Welcome channel set to ${welcomeChannel}`,
       });
       let guildProfile = await Guild.findOne({ guildId: interaction.guild.id });
-      if (!guildProfile) checkGuildSchema();
+      if (!guildProfile) await checkGuildSchema();
       guildProfile.welcomeChannel = welcomeChannel.id;
 
       await guildProfile.save().catch(console.error);
@@ -42,7 +42,7 @@ module.exports = {
       const res = interaction.options.getBoolean(`set`);
       await interaction.reply({ content: `Show NSFW Memes set to ${res}` });
       let guildProfile = await Guild.findOne({ guildId: interaction.guild.id });
-      if (!guildProfile) checkGuildSchema();
+      if (!guildProfile) await checkGuildSchema();
       guildProfile.nsfwmemes = res;
 
       await guildProfile.save().catch(console.error);
