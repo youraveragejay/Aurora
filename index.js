@@ -15,6 +15,9 @@ GlobalFonts.registerFromPath(
 const dotenv = require("dotenv");
 dotenv.config();
 
+// Express
+
+
 // Require neccessary discord.js classes
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 
@@ -28,8 +31,6 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
   ],
 });
-
-//
 
 // Command Handler
 client.commands = new Collection();

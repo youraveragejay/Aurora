@@ -7,8 +7,12 @@ module.exports = async (guild) => {
       guildId: guild.id,
       levels: new Map([]),
       nsfwmemes: false,
+      welcomeChannel: guild.systemChannel,
     });
 
     await guildProfile.save().catch(console.error);
+  }
+  if (!guildProfile.get("welcomeChannel")) {
+    guildProfile.welcomeChannel = guild.systemChannel;
   }
 };
