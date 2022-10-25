@@ -4,6 +4,7 @@ const guildSchema = new Schema({
   welcomeChannel: { type: String, default: "" },
   levels: { type: Map, of: { level: Number, xp: Number }, default: {} },
   nsfwmemes: { type: Boolean, default: false },
+  levelUpChannel: { type: String, default: "" },
 });
 
 module.exports = model("Guild", guildSchema, "guild");
