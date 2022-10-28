@@ -18,6 +18,6 @@ module.exports = {
     const channel = interaction.channel;
 
     channel.bulkDelete(amount, true);
-    interaction.followUp(`Deleted ${amount} messages.`)
+    interaction.followUp(`Deleted ${amount} messages.`);
   },
 };
