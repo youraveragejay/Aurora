@@ -1,6 +1,7 @@
 const Guild = require(`../schemas/guild`);
 const checkUserSchema = require("../checkUserSchema");
 const checkGuildSchema = require("../checkGuildSchema");
+const checkGuildSettings = require("../checkGuildSettings");
 const { baseXP } = require(`../data/config.js`);
 
 module.exports = {
@@ -12,6 +13,7 @@ module.exports = {
     const userId = message.member.user.id;
     await checkGuildSchema(message.guild);
     await checkUserSchema(message.member, message);
+    await checkGuildSettings(message.guild);
 
     let guildProfile = await Guild.findOne({ guildId: message.guild.id });
 
