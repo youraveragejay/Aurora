@@ -8,9 +8,6 @@
     "dev": "nodemon index.js",
     "lint": "eslint ."
   },
-  "author": "youraveragejay",
-  "license": "ISC",
-  "keywords": [],
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/rest": "^1.2.0",
@@ -38,5 +35,5 @@
   "bugs": {
     "url": "https://github.com/youraveragejay/The-Aurora-Project/issues"
   },
-  "homepage": "https://github.com/youraveragejay/The-Aurora-Project#readme",
+  "homepage": "https://github.com/youraveragejay/The-Aurora-Project#readme"
 }
