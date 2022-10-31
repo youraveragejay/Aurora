@@ -31,12 +31,22 @@ module.exports = {
         level: guildProfile.levels.get(`${userId}`).level + 1,
         xp: 0,
       });
-
-      await message.channel.send(
-        `<@${userId}> has reached level ${
-          guildProfile.levels.get(`${userId}`).level
-        }!!`
-      );
+      if (!guildProfile.levelUpChannel) {
+        await message.channel.send(
+          `<@${userId}> has reached level ${
+            guildProfile.levels.get(`${userId}`).level
+          }!!`
+        );
+      } else {
+        message.guild.channels.cache
+          .get(guildProfile.levelUpChannel)
+          .send(
+            `<@${userId}> has reached level ${
+              guildProfile.levels.get(`${userId}`).level
+            }!!`
+          )
+          .catch((err) => console.log(err));
+      }
 
       await guildProfile.save().catch(console.error);
     } else {

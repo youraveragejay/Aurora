@@ -1,4 +1,6 @@
 const { Schema, model } = require("mongoose");
+const { TextChannel } = require("discord.js");
+
 const guildSchema = new Schema({
   guildId: { type: String, required: true },
   welcomeChannel: { type: String, default: "" },
