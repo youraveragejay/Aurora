@@ -19,14 +19,15 @@ module.exports = {
     await interaction.deferReply();
     let guildProfile = await Guild.findOne({ guildId: interaction.guild.id });
     if (!guildProfile) await checkGuildSchema();
-    RedditImageFetcher.fetch({
+    await RedditImageFetcher.fetch({
       type: "custom",
       total: 50,
       subreddit: [interaction.options.getString(`subreddit`)],
     }).then(async (result) => {
       const randNum = Math.floor(Math.random() * result.length);
-      if (!result[randNum])
-        return await interaction.reply({
+
+        if (!result[randNum])
+        return await interaction.followUp({
           content: `This does not exist.`,
           ephemeral: true,
         });
