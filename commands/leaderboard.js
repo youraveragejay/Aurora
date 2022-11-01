@@ -31,8 +31,6 @@ module.exports = {
     if (leaderboard.length < 0)
       await interaction.reply({ content: "Error", ephemeral: true });
 
-    const embed = new EmbedBuilder().setColor(botColour);
-
     const users = Object.keys(leaderboard).map((key) => {
       return [key, leaderboard[key]];
     });
@@ -41,13 +39,17 @@ module.exports = {
     });
     users.slice(0, 10);
 
+    let message = ""
+
     users.forEach((user) => {
       const id = user[0];
       const level = user[1];
-      const currentUser = interaction.guild.members.cache.get(id).user;
-      const uname = currentUser.username;
-      embed.addFields({ name: `${uname}`, value: `Level ${level}`});
+      message += `**${users.indexOf(user) + 1}.** <@${id}> ***Level ${level}***,\n`;
     });
+
+    const embed = new EmbedBuilder()
+      .setColor(botColour)
+      .addFields({ name: `Leaderboard for ${interaction.guild.name}`, value: `${message}` });
 
     await interaction.reply({ embeds: [embed] });
   },

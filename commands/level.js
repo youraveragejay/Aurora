@@ -128,6 +128,12 @@ module.exports = {
       let userXp = guildProfile.levels.get(`${user.id}`).xp;
       let userLvl = guildProfile.levels.get(`${user.id}`).level;
       let lvlXp = baseXP * userLvl;
+      if (lvlXp > 1000) {
+        lvlXp =`${lvlXp / 1000}K`
+      }
+      if (userXp > 1000) {
+        userXp =`${userXp / 1000}K`
+      }
 
       const percentage = Math.floor((userXp / (lvlXp - userXp)) * 100);
       const roundedPercent = Math.round(percentage);
@@ -151,7 +157,7 @@ module.exports = {
       context.font = "28px ValleyShadows";
       context.fillStyle = "#ffffff";
       context.fillText(
-        `   Level: ${userLvl}     XP: ${userXp}/${lvlXp}`,
+        `Level: ${userLvl} XP: ${userXp}/${lvlXp}`,
         canvas.width / 2.5,
         canvas.height / 1.8
       );
