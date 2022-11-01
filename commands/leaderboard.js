@@ -39,17 +39,26 @@ module.exports = {
     });
     users.slice(0, 10);
 
-    let message = ""
+    let message = ``;
+    let index = 0;
 
-    users.forEach((user) => {
+    for (var user of users) {
       const id = user[0];
       const level = user[1];
-      message += `**${users.indexOf(user) + 1}.** <@${id}> ***Level ${level}***,\n`;
-    });
+      try { 
+        await interaction.guild.members.fetch(id);
+        index = index + 1;
+        console.log(`**${index}**. <@${id}>, ***Level: ${level}***\n`);
+        message += `**${index}**. <@${id}>, ***Level: ${level}***\n`;
+      } catch (err) {
+        message += "";
+      }
+    }
 
-    const embed = new EmbedBuilder()
-      .setColor(botColour)
-      .addFields({ name: `Leaderboard for ${interaction.guild.name}`, value: `${message}` });
+    const embed = new EmbedBuilder().setColor(botColour).addFields({
+      name: `Leaderboard for ${interaction.guild.name}`,
+      value: `${message}`,
+    });
 
     await interaction.reply({ embeds: [embed] });
   },
