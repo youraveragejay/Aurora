@@ -60,7 +60,7 @@ module.exports = {
       context.font = "28px ValleyShadows";
       context.fillStyle = "#ffffff";
       context.fillText(
-        `   Level: ${userLvl}     XP: ${userXp}/${lvlXp}`,
+        `Level: ${userLvl}, XP: ${userXp}/${lvlXp}`,
         canvas.width / 2.5,
         canvas.height / 1.8
       );
