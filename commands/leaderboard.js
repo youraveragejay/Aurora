@@ -52,6 +52,7 @@ module.exports = {
         message += `**${index}**. <@${id}>, ***Level: ${level}***\n`;
       } catch (err) {
         message += "";
+        console.log(err)
       }
     }
 
