@@ -32,14 +32,22 @@ module.exports = {
     .setDMPermission(false),
   async execute(interaction) {
     if (interaction.options.getUser(`user`)) {
-      let user = interaction.options.getUser(`user`);
+      let user = interaction.user;
       let guildProfile = await Guild.findOne({ guildId: interaction.guild.id });
       let userXp = guildProfile.levels.get(`${user.id}`).xp;
       let userLvl = guildProfile.levels.get(`${user.id}`).level;
       let lvlXp = baseXP * userLvl;
-
-      const percentage = Math.floor((userXp / (lvlXp - userXp)) * 100);
+      const percentage = Math.floor((userXp / lvlXp) * 100);
       const roundedPercent = Math.round(percentage);
+      if (lvlXp > 1000) {
+        lvlXp = `${lvlXp / 1000}K`;
+      }
+      if (userXp > 1000) {
+        userXp = `${Math.floor(userXp / 1000)}K`;
+      }
+      if (userLvl > 1000) {
+        userLvl = `${userLvl / 1000}K`;
+      }
 
       const canvas = Canvas.createCanvas(700, 250);
       const context = canvas.getContext("2d");
@@ -60,7 +68,7 @@ module.exports = {
       context.font = "28px ValleyShadows";
       context.fillStyle = "#ffffff";
       context.fillText(
-        `Level: ${userLvl}, XP: ${userXp}/${lvlXp}`,
+        `Level: ${userLvl} XP: ${userXp}/${lvlXp}`,
         canvas.width / 2.5,
         canvas.height / 1.8
       );
@@ -128,15 +136,17 @@ module.exports = {
       let userXp = guildProfile.levels.get(`${user.id}`).xp;
       let userLvl = guildProfile.levels.get(`${user.id}`).level;
       let lvlXp = baseXP * userLvl;
+      const percentage = Math.floor((userXp / lvlXp) * 100);
+      const roundedPercent = Math.round(percentage);
       if (lvlXp > 1000) {
-        lvlXp =`${lvlXp / 1000}K`
+        lvlXp = `${lvlXp / 1000}K`;
       }
       if (userXp > 1000) {
-        userXp =`${userXp / 1000}K`
+        userXp = `${Math.floor(userXp / 1000)}K`;
       }
-
-      const percentage = Math.floor((userXp / (lvlXp - userXp)) * 100);
-      const roundedPercent = Math.round(percentage);
+      if (userLvl > 1000) {
+        userLvl = `${userLvl / 1000}K`;
+      }
 
       const canvas = Canvas.createCanvas(700, 250);
       const context = canvas.getContext("2d");
