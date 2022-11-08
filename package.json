@@ -1,5 +1,5 @@
 {
-  "name": "the-aurora-project",
+  "name": "aurora",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -27,13 +27,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/youraveragejay/The-Aurora-Project.git"
+    "url": "git+https://github.com/youraveragejay/Aurora.git"
   },
   "keywords": [],
   "author": "youraveragejay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/youraveragejay/The-Aurora-Project/issues"
+    "url": "https://github.com/youraveragejay/Aurora/issues"
   },
-  "homepage": "https://github.com/youraveragejay/The-Aurora-Project#readme"
+  "homepage": "https://github.com/youraveragejay/Aurora#readme"
 }
