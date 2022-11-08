@@ -3,16 +3,15 @@ const { botColour } = require("../data/config");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("invite")
-    .setDescription("Get a link to invite me to a server"),
+    .setName("dashboard")
+    .setDescription("Get a link to the server dashboard"),
   async execute(interaction) {
-    const inviteLink =
-      "https://youraveragejay.netlify.app/aurora/invite";
+    const inviteLink = `https://youraveragejay.netlify.app/aurora/dashboard/${interaction.guild.id}`;
     const embed = new EmbedBuilder()
-      .setColor(botColour)
       .setDescription(
-        `You can invite me by visiting [youraveragejay.netlify.app/aurora/invite](<${inviteLink}>)`
-      );
+        `Configure ${interaction.guild.name}'s settings [here](${inviteLink})`
+      )
+      .setColor(botColour);
     await interaction.reply({ embeds: [embed] });
   },
 };

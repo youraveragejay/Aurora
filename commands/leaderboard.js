@@ -48,7 +48,6 @@ module.exports = {
       try { 
         await interaction.guild.members.fetch(id);
         index = index + 1;
-        console.log(`**${index}**. <@${id}>, ***Level: ${level}***\n`);
         message += `**${index}**. <@${id}>, ***Level: ${level}***\n`;
       } catch (err) {
         message += "";
