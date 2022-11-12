@@ -40,10 +40,11 @@ module.exports = {
     ),
   async execute(interaction) {
     let guildProfile;
+    await interaction.deferReply();
     switch (interaction.options.getSubcommand()) {
       case `welcomechannel`:
         const welcomeChannel = interaction.options.getChannel(`channel`);
-        await interaction.reply({
+        await interaction.followUp({
           content: `Welcome channel set to ${welcomeChannel}`,
         });
         guildProfile = await Guild.findOne({
@@ -55,7 +56,9 @@ module.exports = {
         await guildProfile.save().catch(console.error);
       case `shownsfwmemes`:
         const res = interaction.options.getBoolean(`set`);
-        await interaction.reply({ content: `Show NSFW Memes set to ${res}` });
+        await interaction.followUp({
+          content: `Show NSFW Memes set to ${res}`,
+        });
         guildProfile = await Guild.findOne({ guildId: interaction.guild.id });
         if (!guildProfile) await checkGuildSchema();
         guildProfile.nsfwmemes = res;
@@ -70,7 +73,7 @@ module.exports = {
         if (!guildProfile) await checkGuildSchema();
         guildProfile.levelUpChannel = levelUpChannel.id;
 
-        await interaction.reply({
+        await interaction.followUp({
           content: `Level up channel set to ${levelUpChannel}`,
         });
 
