@@ -22,7 +22,7 @@ module.exports = {
         .setName(`reason`)
         .setDescription(`The reason for timing out this member`)
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
   async execute(interaction) {
     const user = interaction.options.getUser(`target`);
     const member = await interaction.guild.members
@@ -34,6 +34,7 @@ module.exports = {
 
     await member
       .timeout(time * 60 * 1000, reason)
+      .then(console.log)
       .catch(console.error);
 
     await interaction.reply({

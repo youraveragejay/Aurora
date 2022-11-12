@@ -7,6 +7,11 @@ const guildSchema = new Schema({
   levels: { type: Map, of: { level: Number, xp: Number }, default: {} },
   nsfwmemes: { type: Boolean, default: false },
   levelUpChannel: { type: String, default: "" },
+  reactionRoles: {
+    type: Map,
+    of: { role: String, emoji: String },
+    default: {},
+  },
 });
 
 module.exports = model("Guild", guildSchema, "guild");

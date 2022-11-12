@@ -15,20 +15,24 @@ GlobalFonts.registerFromPath(
 const dotenv = require("dotenv");
 dotenv.config();
 
-// Express
-
-
 // Require neccessary discord.js classes
-const { Client, GatewayIntentBits, Collection } = require("discord.js");
+const {
+  Client,
+  GatewayIntentBits,
+  Collection,
+  Partials,
+} = require("discord.js");
 
 // Create a new client instance
 const client = new Client({
+  partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User],
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessageReactions,
   ],
 });
 
