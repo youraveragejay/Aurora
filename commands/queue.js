@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { botColour } = require("../data/config");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -37,7 +38,7 @@ module.exports = {
       .setFooter({
         text: `Page ${page + 1} of ${totalPages}`,
       })
-      .setThumbnail(currentSong.thumbnail);
+      .setThumbnail(currentSong.thumbnail).setColor(botColour);
 
     await interaction.editReply({ embeds: [embed] });
   },

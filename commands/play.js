@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { QueryType } = require("discord-player");
+const { botColour } = require("../data/config");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -41,7 +42,7 @@ module.exports = {
         `**[${song.title}](${song.url})** has been added to the queue`
       )
       .setThumbnail(song.thumbnail)
-      .setFooter({ text: `Duration: ${song.duration}` });
+      .setFooter({ text: `Duration: ${song.duration}` }).setColor(botColour);
 
     if (!queue.playing) await queue.play();
 

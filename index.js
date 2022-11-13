@@ -2,6 +2,7 @@
 const { token, databaseToken } = require("./data/config.js");
 const { connect, connection } = require(`mongoose`);
 const fs = require("node:fs");
+const { Player } = require("discord-player");
 const path = require("node:path");
 const { GlobalFonts } = require("@napi-rs/canvas");
 GlobalFonts.registerFromPath(
@@ -25,7 +26,12 @@ const {
 
 // Create a new client instance
 const client = new Client({
-  partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User],
+  partials: [
+    Partials.Message,
+    Partials.Channel,
+    Partials.Reaction,
+    Partials.User,
+  ],
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -34,6 +40,15 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessageReactions,
   ],
+});
+
+// Player
+client.player = new Player(client, {
+  ytdlOptions: {
+    filter: "audio",
+    highWaterMark: 1 << 25,
+    bitrate: 96000,
+  },
 });
 
 // Command Handler

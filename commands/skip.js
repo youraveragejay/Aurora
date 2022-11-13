@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { botColour } = require("../data/config");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,7 +9,7 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
 
-    const queue = interaction.client.getQueue(interaction.guildId);
+    const queue = interaction.client.player.getQueue(interaction.guildId);
 
     if (!queue) return await interaction.editReply("No songs in queue");
 
@@ -16,7 +17,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setDescription(`${currentSong.title} has been skipped`)
-      .setThumbnail(currentSong.thumbnail);
+      .setThumbnail(currentSong.thumbnail).setColor(botColour);
 
     queue.skip();
     await interaction.editReply({ embeds: [embed] });
