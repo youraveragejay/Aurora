@@ -174,7 +174,7 @@ module.exports = {
         } else {
           guildProfile.levels.set(`${userId}`, {
             level: newLvl,
-            xp: guildProfile.levels.get(`${userId}`).xp,
+            xp: 0,
           });
           interaction.followUp(
             `Set ${interaction.options.getUser("member").username}#${

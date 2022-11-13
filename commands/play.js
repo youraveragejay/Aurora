@@ -1,90 +1,50 @@
-const play = require("play-dl"); // Everything
-const { SlashCommandBuilder, StageChannel } = require("discord.js");
-const {
-  createAudioPlayer,
-  createAudioResource,
-  StreamType,
-  demuxProbe,
-  joinVoiceChannel,
-  NoSubscriberBehavior,
-  AudioPlayerStatus,
-  VoiceConnectionStatus,
-  getVoiceConnection,
-} = require("@discordjs/voice");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { QueryType } = require("discord-player");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("play")
-    .setDescription("Plays a song in voice.")
+    .setDescription("Plays a song in voice")
     .addStringOption((option) =>
       option
-        .setName(`song`)
-        .setDescription(`The song to play`)
+        .setName(`input`)
+        .setDescription(`A search term or a link`)
         .setRequired(true)
     )
     .setDMPermission(false),
   async execute(interaction) {
     await interaction.deferReply();
-    let song = interaction.options.getString(`song`);
-
-    // Check if user is in VC
-    if (
-      !interaction.member.voice?.channel ||
-      typeof interaction.member.voice.channel === StageChannel
-    )
-      return await interaction.reply("Connect to a Voice Channel");
-
-    // Connect to VC
-    const connection = joinVoiceChannel({
-      channelId: interaction.member.voice.channel.id,
-      guildId: interaction.guild.id,
-      adapterCreator: interaction.guild.voiceAdapterCreator,
-    });
-
-    if (play.yt_validate(interaction.options.getString(`song`)) === "video") {
-      console.log(play.yt_validate(interaction.options.getString(`song`)));
-      let yt_info = await play.video_info(
-        interaction.options.getString(`song`)
+    if (!interaction.member.voice.channel)
+      return await interaction.editReply(
+        `You need to be in a voice channel to use this command`
       );
-      let stream = await play.stream_from_info(yt_info);
-      let resource = createAudioResource(stream.stream, {
-        inputType: stream.type,
-      });
+    const queue = await interaction.client.player.createQueue(
+      interaction.guild
+    );
+    if (!queue.connection)
+      await queue.connect(interaction.member.voice.channel);
 
-      let player = createAudioPlayer({
-        behaviors: {
-          noSubscriber: NoSubscriberBehavior.Play,
-        },
-      });
+    const embed = new EmbedBuilder();
 
-      player.play(resource);
+    let url = interaction.options.getString(`input`);
+    const result = await interaction.client.player.search(url, {
+      requestedBy: interaction.user,
+      searchEngine: QueryType.SPOTIFY_SONG,
+    });
+    if (result.tracks.length === 0)
+      return await interaction.editReply("No results found");
 
-      connection.subscribe(player);
-      await interaction.followUp(`Now playing ${yt_info.video_details.url}`);
-    } else {
-      // Search for the song
-      let yt_info = await play.search(song, {
-        limit: 1,
-      });
+    const song = result.tracks[0];
+    await queue.addTrack(song);
+    embed
+      .setDescription(
+        `**[${song.title}](${song.url})** has been added to the queue`
+      )
+      .setThumbnail(song.thumbnail)
+      .setFooter({ text: `Duration: ${song.duration}` });
 
-      // Setup the audio player
-      let stream = await play.stream(yt_info[0].url);
+    if (!queue.playing) await queue.play();
 
-      let resource = createAudioResource(stream.stream, {
-        inputType: stream.type,
-      });
-
-      let player = createAudioPlayer({
-        behaviors: {
-          noSubscriber: NoSubscriberBehavior.Play,
-        },
-      });
-
-      // Play
-      player.play(resource);
-
-      connection.subscribe(player);
-      await interaction.followUp(`Now playing ${yt_info[0]}`);
-    }
+    await interaction.editReply({ embeds: [embed] });
   },
 };

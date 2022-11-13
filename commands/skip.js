@@ -2,8 +2,8 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("disconnect")
-    .setDescription("Disconnects the bot from voice and clears the queue")
+    .setName("skip")
+    .setDescription("Skips the current song")
     .setDMPermission(false),
   async execute(interaction) {
     await interaction.deferReply();
@@ -12,7 +12,13 @@ module.exports = {
 
     if (!queue) return await interaction.editReply("No songs in queue");
 
-    queue.destroy();
-    await interaction.editReply("Disconnected from voice.");
+    const currentSong = queue.current;
+
+    const embed = new EmbedBuilder()
+      .setDescription(`${currentSong.title} has been skipped`)
+      .setThumbnail(currentSong.thumbnail);
+
+    queue.skip();
+    await interaction.editReply({ embeds: [embed] });
   },
 };

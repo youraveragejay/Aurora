@@ -2,8 +2,8 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("disconnect")
-    .setDescription("Disconnects the bot from voice and clears the queue")
+    .setName("shuffle")
+    .setDescription("Shuffles the current queue")
     .setDMPermission(false),
   async execute(interaction) {
     await interaction.deferReply();
@@ -12,7 +12,7 @@ module.exports = {
 
     if (!queue) return await interaction.editReply("No songs in queue");
 
-    queue.destroy();
-    await interaction.editReply("Disconnected from voice.");
+    queue.shuffle();
+    await interaction.editReply(`Queue of ${queue.tracks.length} songs have been shuffled`);
   },
 };

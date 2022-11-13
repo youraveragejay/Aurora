@@ -2,8 +2,8 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("disconnect")
-    .setDescription("Disconnects the bot from voice and clears the queue")
+    .setName("pause")
+    .setDescription("Pauses music")
     .setDMPermission(false),
   async execute(interaction) {
     await interaction.deferReply();
@@ -12,7 +12,7 @@ module.exports = {
 
     if (!queue) return await interaction.editReply("No songs in queue");
 
-    queue.destroy();
-    await interaction.editReply("Disconnected from voice.");
+    queue.setPaused(true);
+    await interaction.editReply("Music has been paused. Use `/resume` to resume the player.");
   },
 };
