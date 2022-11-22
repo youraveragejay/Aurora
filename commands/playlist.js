@@ -16,6 +16,12 @@ module.exports = {
             .setDescription(`A search term or a link`)
             .setRequired(true)
         )
+        .addBooleanOption((option) =>
+          option
+            .setName(`shuffle`)
+            .setDescription(`Decides whether to shuffle the playlist`)
+            .setRequired(true)
+        )
     )
     .setDMPermission(false),
   async execute(interaction) {
@@ -34,6 +40,7 @@ module.exports = {
 
     switch (interaction.options.getSubcommand()) {
       case `play`:
+        let shuffle = interaction.options.getBoolean(`shuffle`);
         let url = interaction.options.getString(`input`);
         const result = await interaction.client.player.search(url, {
           requestedBy: interaction.user,
@@ -50,6 +57,10 @@ module.exports = {
           )
           .setThumbnail(playlist.thumbnail)
           .setColor(botColour);
+
+        if (shuffle) {
+          await queue.shuffle();
+        }
 
         if (!queue.playing) await queue.play();
         break;

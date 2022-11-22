@@ -28,10 +28,12 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     let url = interaction.options.getString(`input`);
+
     const result = await interaction.client.player.search(url, {
       requestedBy: interaction.user,
       searchEngine: QueryType.SPOTIFY_SONG,
     });
+
     if (result.tracks.length === 0)
       return await interaction.editReply("No results found");
 
@@ -42,7 +44,8 @@ module.exports = {
         `**[${song.title}](${song.url})** has been added to the queue`
       )
       .setThumbnail(song.thumbnail)
-      .setFooter({ text: `Duration: ${song.duration}` }).setColor(botColour);
+      .setFooter({ text: `Duration: ${song.duration}` })
+      .setColor(botColour);
 
     if (!queue.playing) await queue.play();
 
