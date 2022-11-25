@@ -1,9 +1,17 @@
-// Require other classes
-const { token, databaseToken } = require("./data/config.js");
-const { connect, connection } = require(`mongoose`);
-const fs = require("node:fs");
-const { Player } = require("discord-player");
+// Node Modules
 const path = require("node:path");
+const fs = require("node:fs");
+
+// Data
+const { token, databaseToken } = require("./data/config.js");
+require("dotenv").config();
+
+// Require other classes
+const { connect, connection } = require(`mongoose`);
+const { Manager } = require("erela.js");
+const Spotify = require("erela.js-spotify");
+
+// Fonts
 const { GlobalFonts } = require("@napi-rs/canvas");
 GlobalFonts.registerFromPath(
   "./files/fonts/ValleyGrrrlNf-ooKa.ttf",
@@ -13,10 +21,8 @@ GlobalFonts.registerFromPath(
   "./files/fonts/ShadowsOfTheValleyRegularFonty-zLpD.ttf",
   "ValleyShadows"
 );
-const dotenv = require("dotenv");
-dotenv.config();
 
-// Require neccessary discord.js classes
+// Require neccessary Discord.js classes
 const {
   Client,
   GatewayIntentBits,
@@ -42,15 +48,47 @@ const client = new Client({
   ],
 });
 
-// Player
-client.player = new Player(client, {
-  ytdlOptions: {
-    filter: "audio",
-    highWaterMark: 1 << 25,
-    bitrate: 96000,
-  },
-});
+// Erela
+const clientID = process.env.SP_CLIENT_ID;
+const clientSecret = process.env.SP_CLIENT_SECRET;
 
+// Define some options for the node
+const nodes = [
+  {
+    host: "localhost",
+    password: "youshallnotpass",
+    port: 2333,
+  },
+];
+client.manager = new Manager({
+  // The nodes to connect to, optional if using default lavalink options
+  nodes,
+  plugins: [
+    // Initiate the plugin and pass the two required options.
+    new Spotify({
+      clientID,
+      clientSecret,
+    }),
+  ],
+  // Method to send voice data to Discord
+  send: (id, payload) => {
+    const guild = client.guilds.cache.get(id);
+    // NOTE: FOR ERIS YOU NEED JSON.stringify() THE PAYLOAD
+    if (guild) guild.shard.send(payload);
+  },
+})
+  .on("trackStart", (player, track) => {
+    const channel = client.channels.cache.get(player.textChannel);
+    // Send a message when the track starts playing with the track name and the requester's Discord tag, e.g. username#discriminator
+    channel.send(
+      `Now playing: \`${track.title}\`, requested by <@${track.requester.id}>.`
+    );
+  })
+  .on("queueEnd", (player) => {
+    const channel = client.channels.cache.get(player.textChannel);
+    channel.send("Queue has ended.");
+    player.destroy();
+  });
 // Command Handler
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, "commands");
@@ -82,6 +120,19 @@ for (const file of eventFiles) {
   }
 }
 
+// Erela Events
+for (const file of eventFiles) {
+  const filePath = path.join(eventsPath, file);
+  const event = require(filePath);
+  if (event.once) {
+    client.manager.once(event.name, (...args) => event.execute(...args));
+  } else {
+    client.manager.on(event.name, (...args) => event.execute(...args));
+  }
+}
+// THIS IS REQUIRED. Send raw events to Erela.js
+client.on("raw", (d) => client.manager.updateVoiceState(d));
+
 // Mongo events
 for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);
@@ -96,5 +147,5 @@ client.login(token);
 
 // Connect to mongo
 (async () => {
-  await connect(process.env.DB_TOKEN).catch(console.error);
+  await connect(databaseToken).catch(console.error);
 })();

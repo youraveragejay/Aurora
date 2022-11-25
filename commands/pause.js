@@ -1,18 +1,29 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("pause")
-    .setDescription("Pauses music")
+    .setDescription("Pauses current song")
     .setDMPermission(false),
   async execute(interaction) {
     await interaction.deferReply();
 
-    const queue = interaction.client.player.getQueue(interaction.guildId);
+    const player = interaction.client.manager.get(interaction.guild.id);
+    if (!player)
+      return await interaction.editReply("there is no player for this guild.");
 
-    if (!queue) return await interaction.editReply("No songs in queue");
+    const { channel } = interaction.member.voice;
 
-    queue.setPaused(true);
-    await interaction.editReply("Music has been paused. Use `/resume` to resume the player.");
+    if (!channel)
+      return await interaction.editReply("you need to join a voice channel.");
+    if (channel.id !== player.voiceChannel)
+      return await interaction.editReply(
+        "you're not in the same voice channel."
+      );
+    if (player.paused)
+      return await interaction.editReply("the player is already paused.");
+
+    player.pause(true);
+    return await interaction.editReply("paused the player.");
   },
 };

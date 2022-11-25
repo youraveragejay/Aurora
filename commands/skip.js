@@ -1,25 +1,32 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { botColour } = require("../data/config");
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("skip")
-    .setDescription("Skips the current song")
+    .setDescription("Skips current track")
     .setDMPermission(false),
   async execute(interaction) {
     await interaction.deferReply();
 
-    const queue = interaction.client.player.getQueue(interaction.guildId);
+    const player = interaction.client.manager.get(interaction.guild.id);
+    if (!player)
+      return await interaction.editReply("there is no player for this guild.");
 
-    if (!queue) return await interaction.editReply("No songs in queue");
+    const { channel } = interaction.member.voice;
 
-    const currentSong = queue.current;
+    if (!channel)
+      return await interaction.editReply("you need to join a voice channel.");
+    if (channel.id !== player.voiceChannel)
+      return await interaction.editReply(
+        "you're not in the same voice channel."
+      );
 
-    const embed = new EmbedBuilder()
-      .setDescription(`${currentSong.title} has been skipped`)
-      .setThumbnail(currentSong.thumbnail).setColor(botColour);
+    if (!player.queue.current)
+      return await interaction.editReply("there is no music playing.");
 
-    queue.skip();
-    await interaction.editReply({ embeds: [embed] });
+    const { title } = player.queue.current;
+
+    player.stop();
+    return await interaction.editReply(`${title} was skipped.`);
   },
 };

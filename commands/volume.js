@@ -1,31 +1,42 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { QueueRepeatMode } = require(`discord-player`);
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("volume")
-    .setDescription("Sets volume of player")
+    .setDescription("Sets the volume of the player")
     .addIntegerOption((option) =>
       option
-        .setName(`volume`)
-        .setDescription(`The volume to set to`)
+        .setName("volume")
+        .setDescription("Volume between 1 and 100")
         .setRequired(true)
     )
     .setDMPermission(false),
   async execute(interaction) {
     await interaction.deferReply();
 
-    const volume = interaction.options.getInteger(`volume`);
+    const player = interaction.client.manager.get(interaction.guild.id);
+    if (!player)
+      return await interaction.editReply("there is no player for this guild.");
 
-    const queue = interaction.client.player.getQueue(interaction.guildId);
+    const { channel } = interaction.member.voice;
 
-    if (!queue) return await interaction.editReply("No songs in queue");
+    if (!channel)
+      return await interaction.editReply("you need to join a voice channel.");
+    if (channel.id !== player.voiceChannel)
+      return await interaction.editReply(
+        "you're not in the same voice channel."
+      );
 
-    if (volume < 0 || volume > 100){
-      await interaction.editReply("Volume must be between 0 and 100")
-    }
+    const volume = interaction.options.getInteger("volume");
 
-    queue.setVolume(volume);
-    await interaction.editReply(`Set volume to ${volume}`);
+    if (!volume || volume < 1 || volume > 100)
+      return await interaction.editReply(
+        "you need to give me a volume between 1 and 100."
+      );
+
+    player.setVolume(volume);
+    return await interaction.editReply(
+      `set the player volume to \`${volume}\`.`
+    );
   },
 };
