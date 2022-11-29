@@ -6,8 +6,8 @@ const Guild = require(`../schemas/guild`);
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("meme")
-    .setDescription("Sends a meme using Reddit API")
+    .setName("reddit")
+    .setDescription("Sends a random post using Reddit API")
     .addStringOption((option) =>
       option
         .setName(`subreddit`)
@@ -26,7 +26,7 @@ module.exports = {
     }).then(async (result) => {
       const randNum = Math.floor(Math.random() * result.length);
 
-        if (!result[randNum])
+      if (!result[randNum])
         return await interaction.followUp({
           content: `This does not exist.`,
           ephemeral: true,

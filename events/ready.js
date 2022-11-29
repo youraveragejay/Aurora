@@ -7,7 +7,7 @@ module.exports = {
     console.log(`Ready! Logged in as ${client.user.tag}`);
     client.manager.init(client.user.id);
     client.user.setPresence({
-      activities: [{ name: "/meme", type: ActivityType.Watching }],
+      activities: [{ name: "to /play", type: ActivityType.Listening }],
       status: "idle",
     });
   },
