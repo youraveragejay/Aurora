@@ -3,7 +3,7 @@ const path = require("node:path");
 const fs = require("node:fs");
 
 // Data
-const { token, databaseToken } = require("./data/config.js");
+const { token, databaseToken, botColour } = require("./data/config.js");
 require("dotenv").config();
 
 // Require other classes
@@ -28,6 +28,7 @@ const {
   GatewayIntentBits,
   Collection,
   Partials,
+  EmbedBuilder,
 } = require("discord.js");
 
 // Create a new client instance
@@ -80,9 +81,13 @@ client.manager = new Manager({
   .on("trackStart", (player, track) => {
     const channel = client.channels.cache.get(player.textChannel);
     // Send a message when the track starts playing with the track name and the requester's Discord tag, e.g. username#discriminator
-    channel.send(
-      `Now playing: \`${track.title}\`, requested by <@${track.requester.id}>.`
-    );
+    const embed = new EmbedBuilder()
+      .setDescription(
+        `**Now playing**: \`${track.title}\`, \nRequested by <@${track.requester.id}>.`
+      )
+      .setColor(botColour);
+
+    channel.send({ embeds: [embed] });
   })
   .on("queueEnd", (player) => {
     const channel = client.channels.cache.get(player.textChannel);
