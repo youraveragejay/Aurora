@@ -12,7 +12,8 @@ function createEmbed(queue, tracks, start, page, maxPages, interaction) {
     .setAuthor({
       name: `Queue for ${interaction.guild.name}`,
     })
-    .setColor(botColour);
+    .setColor(botColour)
+    .setThumbnail(queue.current.thumbnail);
 
   if (queue.current)
     embed.addFields([
@@ -135,10 +136,18 @@ module.exports = {
 
     const row = createRow(maxPages, page);
 
-    let message = await interaction.editReply({
-      embeds: [embed],
-      components: [row],
-    });
+    let message;
+
+    if (maxPages === 1) {
+      message = await interaction.editReply({
+        embeds: [embed],
+      });
+    } else {
+      message = await interaction.editReply({
+        embeds: [embed],
+        components: [row],
+      });
+    }
 
     const filter = (i) => i.user.id === interaction.user.id;
 

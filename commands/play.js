@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { botColour } = require("../data/config");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -47,6 +48,8 @@ module.exports = {
       });
     }
 
+    let embed = new EmbedBuilder();
+
     switch (res.loadType) {
       case "NO_MATCHES":
         if (!player.queue.current) player.destroy();
@@ -56,9 +59,12 @@ module.exports = {
 
         if (!player.playing && !player.paused && !player.queue.size)
           player.play();
-        return await interaction.editReply(
-          `enqueuing \`${res.tracks[0].title}\`.`
-        );
+
+        embed
+          .setDescription(`Added \`${res.tracks[0].title}\` to queue`)
+          .setColor(botColour);
+
+        return await interaction.followUp({ embeds: [embed] });
       case "PLAYLIST_LOADED":
         player.queue.add(res.tracks);
 
@@ -68,9 +74,14 @@ module.exports = {
           player.queue.totalSize === res.tracks.length
         )
           player.play();
-        return await interaction.editReply(
-          `enqueuing playlist \`${res.playlist.name}\` with ${res.tracks.length} tracks.`
-        );
+
+        embed
+          .setDescription(
+            `Added playlist \`${res.playlist.name}\` with ${res.tracks.length} tracks to queue`
+          )
+          .setColor(botColour);
+
+        return await interaction.followUp({ embeds: [embed] });
       case "SEARCH_RESULT": {
         let max = 5,
           collected,
@@ -119,7 +130,11 @@ module.exports = {
             volume: 25,
           });
 
-        return await interaction.editReply(`enqueuing \`${track.title}\`.`);
+        embed
+          .setDescription(`Added \`${track.title}\` to queue`)
+          .setColor(botColour);
+
+        return await interaction.followUp({ embeds: [embed] });
       }
     }
   },
