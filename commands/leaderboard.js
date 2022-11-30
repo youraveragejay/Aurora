@@ -45,14 +45,12 @@ module.exports = {
     for (var user of users) {
       const id = user[0];
       const level = user[1];
-      try { 
-        await interaction.guild.members.fetch(id);
+      
+        const member= await interaction.guild.members.fetch(id);
+        if(!member) { message += ""} else{
         index = index + 1;
-        message += `**${index}**. <@${id}>, ***Level: ${level}***\n`;
-      } catch (err) {
-        message += "";
-        console.log(err)
-      }
+        message += `**${index}**. <@${id}>, ***Level: ${level}***\n`;}
+
     }
 
     const embed = new EmbedBuilder().setColor(botColour).addFields({
