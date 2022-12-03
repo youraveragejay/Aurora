@@ -5,7 +5,9 @@ const {
   ActionRowBuilder,
   ButtonStyle,
 } = require("discord.js");
-const { botColour } = require("../data/config");
+const fs = require("node:fs");
+const path = require("node:path");
+const { botColour } = require("../../data/config");
 
 function createRow(maxPages, page = 1) {
   const row = new ActionRowBuilder();
@@ -75,105 +77,93 @@ module.exports = {
     const settingsEmbed = new EmbedBuilder()
       .setTitle("⚙️ Settings")
       .setDescription("Settings for the bot")
-      .setColor(botColour)
-      .addFields(
-        {
-          name: "/settings welcomechannel",
-          value: "Set the channel to send welcome messages to",
-        },
-        {
-          name: "/settings levelupchannel",
-          value: "Set the channel to send level up messages to",
-        },
-        {
-          name: "/settings shownsfwposts",
-          value: "Sets whether to show posts flagged as NSFW from reddit",
-        }
-      );
+      .setColor(botColour);
 
     const musicEmbed = new EmbedBuilder()
       .setTitle("🎶 Music")
       .setDescription("Music commands")
-      .setColor(botColour)
-      .addFields(
-        {
-          name: "/play",
-          value: "Plays a song requested in the users voice channel",
-        },
-        { name: "/pause", value: "Pauses the current player" },
-        { name: "/resume", value: "Resumes the player if paused" },
-        { name: "/skip", value: "Skips the current song" },
-        { name: "/queue", value: "Shows the current queue" },
-        {
-          name: "/bassboost",
-          value: "Sets the bassboost level of the player",
-        },
-        { name: "/join", value: "Joins the users voice channel" },
-        {
-          name: "/stop",
-          value: "Clears the queue and disconnects from voice",
-        },
-        { name: "/loop", value: "Loops current queue/song" },
-        { name: "/volume", value: "Sets the volume of the player" }
-      );
+      .setColor(botColour);
 
     const levelEmbed = new EmbedBuilder()
       .setTitle("✨ Leveling")
       .setDescription("Leveling commands")
-      .setColor(botColour)
-      .addFields(
-        { name: "/level", value: "Shows users level and xp" },
-        {
-          name: "/leaderboard",
-          value: "Shows the top 10 users levels in the server",
-        },
-        { name: "/xp add", value: "Add xp to a user" },
-        { name: "/xp remove", value: "Remove xp from a user" },
-        { name: "/xp set xp", value: "Set the xp of a user" },
-        { name: "/xp set level", value: "Set the level of a user" }
-      );
+      .setColor(botColour);
 
     const modEmbed = new EmbedBuilder()
       .setTitle("🔨 Moderation")
       .setDescription("Moderation commands")
-      .setColor(botColour)
-      .addFields(
-        { name: "/ban", value: "Bans a user" },
-        { name: "/unban", value: "Unban a user" },
-        { name: "/kick", value: "Kick a user" },
-        { name: "/timeout add", value: "Add a timeout to a user" },
-        { name: "/timeout remove", value: "Remove a timeout from a user" },
-        { name: "/clear", value: "Clears messages from a channel" },
-        { name: "/dashboard", value: "Get a link to the server dashboard" }
-      );
+      .setColor(botColour);
 
     const generalEmbed = new EmbedBuilder()
       .setTitle("🖥️ General")
       .setDescription("General commands")
-      .setColor(botColour)
-      .addFields(
-        { name: "/avatar", value: "Shows the avatar of a user" },
-        { name: "/info server", value: "Shows server info" },
-        { name: "/info user", value: "Shows a users info" },
-        { name: "/ping", value: "Returns bot latency" },
-        { name: "/reddit", value: "Gets a random post from a subreddit" },
-        {
-          name: "/invite",
-          value: "Get a link to invite the bot to your server",
-        }
-      );
+      .setColor(botColour);
+
+    const reactionRoleEmbed = new EmbedBuilder()
+      .setTitle("😜 Reaction Roles")
+      .setDescription("Reaction role commands")
+      .setColor(botColour);
 
     const embeds = [
       generalEmbed,
       levelEmbed,
       musicEmbed,
+      reactionRoleEmbed,
       modEmbed,
       settingsEmbed,
     ];
 
+    const folderPath = path.join(__dirname, "../../commands");
+    const commandFolders = fs.readdirSync(folderPath);
+
+    let index;
+
+    for (const folder of commandFolders) {
+      const commandsPath = path.join(__dirname, "../", folder);
+      const commandFiles = fs
+        .readdirSync(commandsPath)
+        .filter((file) => file.endsWith(".js"));
+
+      for (e in embeds) {
+        let prop = embeds[e];
+        e = prop;
+
+        if (e.data.title.toLowerCase().replace(/\s+/g, "").includes(folder)) {
+          index = embeds.indexOf(e);
+
+          const embed = embeds[index];
+          for (const file of commandFiles) {
+            const filePath = path.join(commandsPath, file);
+            const command = require(filePath);
+
+            if (
+              command.data.options.length != 0 &&
+              command.data.options[0].options
+            ) {
+              for (opt in command.data.options) {
+                const subcmds = command.data.options;
+
+                const subcmd = subcmds[opt];
+
+                embed.addFields({
+                  name: "/" + command.data.name + " " + subcmd.name,
+                  value: subcmd.description,
+                });
+              }
+            } else {
+              embed.addFields({
+                name: "/" + command.data.name,
+                value: command.data.description,
+              });
+            }
+          }
+        }
+      }
+    }
+
     let page = 1;
 
-    let row = createRow(embeds.length - 1);
+    let row = createRow(embeds.length);
 
     let message = await interaction.followUp({
       embeds: [embeds[page - 1]],
@@ -194,17 +184,17 @@ module.exports = {
         case "page_forward_single":
           page += 1;
 
-          row = createRow(embeds.length - 1, page);
+          row = createRow(embeds.length, page);
 
           message = await interaction.editReply({
-            embeds: [embeds[page]],
+            embeds: [embeds[page - 1]],
             components: [row],
           });
           break;
         case "page_forward_whole":
           page = embeds.length;
 
-          row = createRow(embeds.length - 1, page);
+          row = createRow(embeds.length, page);
 
           message = await interaction.editReply({
             embeds: [embeds[page - 1]],
@@ -214,17 +204,17 @@ module.exports = {
         case "page_back_single":
           page -= 1;
 
-          row = createRow(embeds.length - 1, page);
+          row = createRow(embeds.length, page);
 
           message = await interaction.editReply({
-            embeds: [embeds[page]],
+            embeds: [embeds[page - 1]],
             components: [row],
           });
           break;
         case "page_back_whole":
           page = 1;
 
-          row = createRow(embeds.length - 1, page);
+          row = createRow(embeds.length, page);
 
           message = await interaction.editReply({
             embeds: [embeds[page - 1]],
