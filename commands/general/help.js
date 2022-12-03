@@ -4,12 +4,9 @@ const {
   ButtonBuilder,
   ActionRowBuilder,
   ButtonStyle,
-  ApplicationCommandOptionType,
 } = require("discord.js");
-const { ifError } = require("node:assert");
 const fs = require("node:fs");
 const path = require("node:path");
-const { isFunction } = require("node:util");
 const { botColour } = require("../../data/config");
 
 function createRow(maxPages, page = 1) {
