@@ -53,7 +53,8 @@ module.exports = {
         if (!guildProfile) await checkGuildSchema();
         guildProfile.welcomeChannel = welcomeChannel.id;
 
-        await guildProfile.save().catch(console.error);
+        await guildProfile.save().catch(console.log);
+        break;
       case `shownsfwmemes`:
         const res = interaction.options.getBoolean(`set`);
         await interaction.followUp({
@@ -63,7 +64,8 @@ module.exports = {
         if (!guildProfile) await checkGuildSchema();
         guildProfile.nsfwmemes = res;
 
-        await guildProfile.save().catch(console.error);
+        await guildProfile.save().catch(console.log);
+        break;
       case `levelupchannel`:
         const levelUpChannel = interaction.options.getChannel(`channel`);
 
@@ -77,7 +79,8 @@ module.exports = {
           content: `Level up channel set to ${levelUpChannel}`,
         });
 
-        await guildProfile.save().catch(console.error);
+        await guildProfile.save().catch(console.log);
+        break;
     }
   },
 };
