@@ -223,5 +223,8 @@ module.exports = {
           break;
       }
     });
+    collector.on("end", async () => {
+      await interaction.editReply({ components: [] });
+    });
   },
 };
