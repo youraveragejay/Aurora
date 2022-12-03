@@ -7,8 +7,8 @@ module.exports = async (guild) => {
       guildId: guild.id,
       levels: new Map([]),
       nsfwmemes: false,
-      welcomeChannel: guild.systemChannel,
-      levelUpChannel: guild.systemChannel,
+      welcomeChannel: guild.systemChannel.id,
+      levelUpChannel: guild.systemChannel.id,
       reactionRoles: new Map([]),
     });
 
