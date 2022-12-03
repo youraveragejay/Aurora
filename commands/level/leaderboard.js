@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { botColour } = require("../data/config");
-const Guild = require("../schemas/guild");
+const { botColour } = require(`../../data/config.js`);
+const Guild = require("../../schemas/guild");
 
 const findMinInArray = (array) => {
   const min = Math.min(array);

@@ -2,7 +2,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const Guild = require(`../schemas/guild`);
 const checkUserSchema = require("../checkUserSchema");
 const checkGuildSchema = require("../checkGuildSchema");
-const { baseXP } = require(`../data/config.js`);
+const { baseXP } = require(`../../data/config.js`);
 
 module.exports = {
   data: new SlashCommandBuilder()

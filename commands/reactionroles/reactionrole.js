@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { botColour } = require("../data/config");
-const Guild = require("../schemas/guild");
-const checkGuildSchema = require("../checkGuildSchema");
-const checkUserSchema = require("../checkUserSchema");
+const { botColour } = require("../../data/config");
+const Guild = require("../../schemas/guild");
+const checkGuildSchema = require("../../checkGuildSchema");
+const checkUserSchema = require("../../checkUserSchema");
 
 module.exports = {
   data: new SlashCommandBuilder()

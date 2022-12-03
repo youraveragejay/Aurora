@@ -5,7 +5,7 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
-const { botColour } = require("../data/config");
+const { botColour } = require("../../data/config");
 
 function createEmbed(queue, tracks, start, page, maxPages, interaction) {
   const embed = new EmbedBuilder()

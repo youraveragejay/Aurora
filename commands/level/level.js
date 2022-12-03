@@ -1,10 +1,9 @@
 const { AttachmentBuilder } = require(`discord.js`);
 const Canvas = require("@napi-rs/canvas");
 const { request } = require("undici");
-const { botColour } = require(`../data/config`);
 const { SlashCommandBuilder } = require("discord.js");
-const Guild = require(`../schemas/guild`);
-const { baseXP } = require(`../data/config.js`);
+const Guild = require(`../../schemas/guild`);
+const { baseXP } = require(`../../data/config.js`);
 
 const applyText = (canvas, text) => {
   const context = canvas.getContext("2d");
