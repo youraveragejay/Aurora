@@ -31,7 +31,7 @@ module.exports = {
     .setDMPermission(false),
   async execute(interaction) {
     if (interaction.options.getUser(`user`)) {
-      let user = interaction.user;
+      let user = interaction.options.getUser(`user`);
       let guildProfile = await Guild.findOne({ guildId: interaction.guild.id });
       let userXp = guildProfile.levels.get(`${user.id}`).xp;
       let userLvl = guildProfile.levels.get(`${user.id}`).level;
