@@ -23,13 +23,29 @@ module.exports = {
     });
 
     try {
-      const reactionRole = guildProfile.reactionRoles.get(
-        `${reaction.message.id}`
-      );
-      const emoji = reactionRole.emoji;
+      let reactionRole;
+      guildProfile.reactionRoles.forEach((r) => {
+        if (r.message == reaction.message.id) {
+          for (let [key, value] of guildProfile.reactionRoles.entries()) {
+            if (value.message == reaction.message.id) {
+              reactionRole = r;
+            }
+          }
+        }
+      });
+
+      let emoji = reactionRole.emoji;
+      let reactionEmoji;
+      if (reaction.emoji.id) {
+        reactionEmoji =
+          "<:" + reaction.emoji.name + ":" + reaction.emoji.id + ">";
+      } else {
+        reactionEmoji = reaction.emoji.name;
+      }
+
       const roles = await reaction.message.guild.roles.fetch();
-      const role = roles.filter((r) => r.name === `${reactionRole.role}`);
-      if (reaction.emoji.name == emoji) {
+      const role = roles.filter((r) => r.id === `${reactionRole.role}`);
+      if (reactionEmoji == emoji) {
         await reaction.message.guild.members.resolve(user.id).roles.add(role);
       }
     } catch (err) {
