@@ -3,6 +3,7 @@ const { AttachmentBuilder } = require(`discord.js`);
 const { createCanvas, Image } = require("@napi-rs/canvas");
 const { readFile } = require("fs/promises");
 const { request } = require("undici");
+const checkGuildSchema = require("../checkGuildSchema");
 
 const applyText = (canvas, text) => {
   const context = canvas.getContext("2d");
@@ -56,12 +57,8 @@ module.exports = {
     });
 
     let guildProfile = await Guild.findOne({ guildId: member.guild.id });
-    try {
-      let channel = guildProfile.welcomeChannel;
-    } catch (err) {
-      console.log(err);
-      return;
-    }
+    checkGuildSchema(member.guild);
+    if (!guildProfile.has("welcomeChannel")) return;
     member.guild.channels.cache
       .get(guildProfile.welcomeChannel)
       .send({ files: [attachment] })

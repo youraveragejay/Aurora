@@ -7,14 +7,18 @@ module.exports = async (guild) => {
       guildId: guild.id,
       levels: new Map([]),
       nsfwmemes: false,
-      welcomeChannel: guild.systemChannel.id,
-      levelUpChannel: guild.systemChannel.id,
+      welcomeChannel: guild.systemChannel,
+      levelUpChannel: guild.systemChannel,
       reactionRoles: new Map([]),
     });
 
-    await guildProfile.save().catch(console.error);
+    await guildProfile.save().catch(console.log);
   }
-  if (!guildProfile.get("welcomeChannel")) {
+  if (!guildProfile.has("welcomeChannel")) {
     guildProfile.welcomeChannel = guild.systemChannel;
   }
+  if (!guildProfile.has("levelUpChannel")) {
+    guildProfile.levelUpChannel = guild.systemChannel;
+  }
 };
+F
