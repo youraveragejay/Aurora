@@ -10,5 +10,6 @@ module.exports = {
       activities: [{ name: "/play", type: ActivityType.Listening }],
       status: "idle",
     });
+    //console.log(client.guilds.cache.map((guild) => guild.name));
   },
 };
