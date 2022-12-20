@@ -21,4 +21,3 @@ module.exports = async (guild) => {
     guildProfile.levelUpChannel = guild.systemChannel;
   }
 };
-F
