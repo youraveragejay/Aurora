@@ -58,7 +58,11 @@ module.exports = {
 
     let guildProfile = await Guild.findOne({ guildId: member.guild.id });
     checkGuildSchema(member.guild);
-    if (!guildProfile.has("welcomeChannel")) return;
+    try {
+      guildProfile.welcomeChannel;
+    } catch (e) {
+      return;
+    }
     member.guild.channels.cache
       .get(guildProfile.welcomeChannel)
       .send({ files: [attachment] })

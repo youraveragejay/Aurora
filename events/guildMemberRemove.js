@@ -6,7 +6,11 @@ module.exports = {
   async execute(member) {
     let guildProfile = await Guild.findOne({ guildId: member.guild.id });
     checkGuildSchema(member.guild);
-    if (!guildProfile.has("welcomeChannel")) return;
+    try {
+      guildProfile.welcomeChannel;
+    } catch (e) {
+      return;
+    }
     member.guild.channels.cache
       .get(guildProfile.welcomeChannel)
       .send(`<@${member.id}> has left.`)

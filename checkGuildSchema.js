@@ -14,11 +14,16 @@ module.exports = async (guild) => {
 
     await guildProfile.save().catch(console.log);
   }
-  if (!guildProfile.has("welcomeChannel")) {
+  try {
+    guildProfile.welcomeChannel;
+  } catch (e) {
     guildProfile.welcomeChannel = guild.systemChannel;
   }
-  if (!guildProfile.has("levelUpChannel")) {
+
+  try {
+    guildProfile.levelUpChannel;
+  } catch (e) {
     guildProfile.levelUpChannel = guild.systemChannel;
   }
 };
-F
+F;
