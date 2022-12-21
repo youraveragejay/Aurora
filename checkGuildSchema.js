@@ -14,15 +14,4 @@ module.exports = async (guild) => {
 
     await guildProfile.save().catch(console.log);
   }
-  try {
-    guildProfile.welcomeChannel;
-  } catch (e) {
-    guildProfile.welcomeChannel = guild.systemChannel.id;
-  }
-
-  try {
-    guildProfile.levelUpChannel;
-  } catch (e) {
-    guildProfile.levelUpChannel = guild.systemChannel.id;
-  }
 };

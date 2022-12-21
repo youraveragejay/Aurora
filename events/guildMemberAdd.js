@@ -19,6 +19,7 @@ const applyText = (canvas, text) => {
 module.exports = {
   name: "guildMemberAdd",
   async execute(member) {
+    checkGuildSchema(member.guild);
     const canvas = createCanvas(700, 250);
     const context = canvas.getContext("2d");
 
@@ -57,12 +58,7 @@ module.exports = {
     });
 
     let guildProfile = await Guild.findOne({ guildId: member.guild.id });
-    checkGuildSchema(member.guild);
-    try {
-      guildProfile.welcomeChannel;
-    } catch (e) {
-      return;
-    }
+
     member.guild.channels.cache
       .get(guildProfile.welcomeChannel)
       .send({ files: [attachment] })
