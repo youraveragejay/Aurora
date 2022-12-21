@@ -76,7 +76,7 @@ module.exports = {
 
     const settingsEmbed = new EmbedBuilder()
       .setTitle("⚙️ Settings")
-      .setDescription("Settings for the bot")
+      .setDescription("Settings for the bot").setFooter("If you are not getting welcome/leave messages please make sure that you have set a welcome channel using the designated command")
       .setColor(botColour);
 
     const musicEmbed = new EmbedBuilder()

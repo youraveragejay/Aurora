@@ -7,6 +7,8 @@ module.exports = {
     checkGuildSchema(member.guild);
     let guildProfile = await Guild.findOne({ guildId: member.guild.id });
 
+    if(guildProfile.welcomeChannel === null) return;
+
     member.guild.channels.cache
       .get(guildProfile.welcomeChannel)
       .send(`<@${member.id}> has left.`)
