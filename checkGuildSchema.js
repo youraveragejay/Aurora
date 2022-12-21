@@ -7,8 +7,8 @@ module.exports = async (guild) => {
       guildId: guild.id,
       levels: new Map([]),
       nsfwmemes: false,
-      welcomeChannel: guild.systemChannel,
-      levelUpChannel: guild.systemChannel,
+      welcomeChannel: guild.systemChannel.id,
+      levelUpChannel: guild.systemChannel.id,
       reactionRoles: new Map([]),
     });
 
@@ -17,12 +17,12 @@ module.exports = async (guild) => {
   try {
     guildProfile.welcomeChannel;
   } catch (e) {
-    guildProfile.welcomeChannel = guild.systemChannel;
+    guildProfile.welcomeChannel = guild.systemChannel.id;
   }
 
   try {
     guildProfile.levelUpChannel;
   } catch (e) {
-    guildProfile.levelUpChannel = guild.systemChannel;
+    guildProfile.levelUpChannel = guild.systemChannel.id;
   }
 };
